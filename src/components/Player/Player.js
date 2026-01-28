@@ -169,7 +169,7 @@ function Player(props) {
         <>
             {/* Show player only if details are recieved */}
             {props.details && <div className={props.theme}>
-                <section className="py-10 text-gray-100 bg-gradient-to-br from-black via-black to-black body-font px-4" id="player">
+                <section className="pt-28 pb-10 text-gray-100 bg-gradient-to-br from-black via-black to-black body-font px-4" id="player">
                     <div className="min-h-screen flex flex-col items-center justify-center">
                         <div className="max-w-xl w-full bg-white/5 backdrop-blur-xl border border-cyan-500/50 rounded-3xl shadow-2xl overflow-hidden">
                             <div className="relative">
