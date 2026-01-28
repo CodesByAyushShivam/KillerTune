@@ -9,7 +9,7 @@ function Results(props) { // query
     // Search for the song once the component renders
     useEffect(() => {
         search(props.query)
-        document.title = `'${props.query}' - TuneStation`
+        document.title = `'${props.query}' - KillerTune`
     }, [])
 
     const [results, setResults] = useState([]) //the results obtained from search()
@@ -66,11 +66,15 @@ function Results(props) { // query
 
     return (
         <>
-            <section className="text-black dark:text-gray-400 bg-light-100 dark:bg-deep-900 body-font">
+            <section className="text-white body-font">
                 <div className="container px-5 py-8 mx-auto" id="blurred_results">
-                    <div className="flex flex-col text-center w-full mb-10">
-                        <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-black dark:text-white">Search Results: &#10075;<span
-                            id="search_query" className="capitalize">{props.query}</span>&#10076;</h1>
+                    <div className="flex flex-col text-center w-full mb-8">
+                        <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2">
+                            Search results for &#10075;<span
+                                id="search_query"
+                                className="capitalize text-cyan-400"
+                            >{props.query}</span>&#10076;
+                        </h1>
                     </div>
 
                     <div className="flex flex-wrap -m-2" id="results">
