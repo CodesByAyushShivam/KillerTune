@@ -108,3 +108,12 @@ code {
     transform: scaleY(1);
   }
 }
+
+/* Utility to hide native scrollbars for carousels */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}

@@ -7,9 +7,16 @@ function Albums(props) { //albums ,setAlbumId
 
 
     return (
-        <div className="flex flex-wrap m-2" >
+        <div className="flex overflow-x-auto flex-nowrap gap-4 m-2 pb-2 hide-scrollbar">
             {props.albums.map((album) => {
-                return <Card onClick={() => { props.setAlbumId(album.id); navigate("/albums") }} key={album.id} image={album.image} name={album.name.replace(/&quot;/g, '"')} />
+                return (
+                    <Card
+                        onClick={() => { props.setAlbumId(album.id); navigate("/albums") }}
+                        key={album.id}
+                        image={album.image}
+                        name={album.name.replace(/&quot;/g, '"')}
+                    />
+                )
             })}
         </div>
     )

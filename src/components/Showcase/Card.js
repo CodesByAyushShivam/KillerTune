@@ -2,9 +2,9 @@ import React from 'react'
 
 function Card(props) { // name, img, key (id), onClick as props
     return (
-        <div className="m-auto p-4 lg:w-1/4 md:w-1/2" onClick={props.onClick}>
+        <div className="p-2 min-w-[9.5rem] md:min-w-[10.5rem]" onClick={props.onClick}>
             <div className="relative h-full flex flex-col items-center text-center">
-                <img className="hover:brightness-50 flex-shrink-0 rounded-lg w-screen h-56 object-cover object-center mb-4"
+                <img className="hover:brightness-50 flex-shrink-0 rounded-xl w-40 h-40 md:w-44 md:h-44 object-cover object-center mb-3"
                     src={props.image} />
 
                 <button
