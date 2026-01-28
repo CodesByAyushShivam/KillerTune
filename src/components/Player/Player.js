@@ -70,8 +70,7 @@ function Player(props) {
 
             const songs = resp.data && resp.data.songs && resp.data.songs.results ? resp.data.songs.results : [];
             const filtered = songs.filter((song) => song.id !== props.details.id);
-            // show up to 5 related songs
-            setRelatedSongs(filtered.slice(0, 5));
+            setRelatedSongs(filtered.slice(0, 8));
             props.setProgress(100);
         } catch (e) {
             props.setProgress(100);
@@ -94,49 +93,32 @@ function Player(props) {
             navigate("/search")
             return
         }
-
+        document.title = `Playing ${props.details.name.replace(/&quot;/g, '"')} - KillerTune`
         const audio = audioRef.current;
-        if (!audio) return;
-
-        // reset state for new track
-        setIsPlaying(false);
-        setCurrentTime(0);
-        setDuration(0);
-
-        document.title = `Playing ${props.details.name.replace(/&quot;/g, '"')} - KillerTune`;
-        const playerSection = document.getElementById("player");
-        if (playerSection) {
-            playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        const onLoadedMetadata = () => {
-            setIsPlaying(true);
+        document.getElementById("player").scrollIntoView(true)
+        audio.addEventListener('loadedmetadata', () => {
+            setIsPlaying(true)
             setDuration(audio.duration);
             audio.play();
-        };
+        });
+        fetchRelatedSongs();
 
-        const onTimeUpdate = () => {
+        audio.addEventListener('timeupdate', () => {
             setCurrentTime(audio.currentTime);
-        };
+        });
 
-        const onEnded = () => {
+        audio.addEventListener('ended', () => {
             setIsPlaying(false);
             setCurrentTime(0);
             audio.currentTime = 0;
-        };
-
-        audio.addEventListener('loadedmetadata', onLoadedMetadata);
-        audio.addEventListener('timeupdate', onTimeUpdate);
-        audio.addEventListener('ended', onEnded);
-
-        fetchRelatedSongs();
+        });
 
         return () => {
-            audio.removeEventListener('loadedmetadata', onLoadedMetadata);
-            audio.removeEventListener('timeupdate', onTimeUpdate);
-            audio.removeEventListener('ended', onEnded);
+            audio.removeEventListener('loadedmetadata', () => { });
+            audio.removeEventListener('timeupdate', () => { });
+            audio.removeEventListener('ended', () => { });
         }
-    }, [props.details && props.details.id]);
+    }, []);
 
     const handlePlayPause = () => {
         const audio = audioRef.current;
@@ -188,10 +170,8 @@ function Player(props) {
             {/* Show player only if details are recieved */}
             {props.details && <div className={props.theme}>
                 <section className="pt-28 pb-10 text-gray-100 bg-gradient-to-br from-black via-black to-black body-font px-4" id="player">
-                    <div className="min-h-screen flex flex-col lg:flex-row items-start justify-center gap-8 max-w-6xl mx-auto">
-                        {/* Main player card */}
-                        <div className="w-full lg:w-2/3 flex justify-center">
-                            <div className="max-w-xl w-full bg-white/5 backdrop-blur-xl border border-cyan-500/50 rounded-3xl shadow-2xl overflow-hidden">
+                    <div className="min-h-screen flex flex-col items-center justify-center">
+                        <div className="max-w-xl w-full bg-white/5 backdrop-blur-xl border border-cyan-500/50 rounded-3xl shadow-2xl overflow-hidden">
                             <div className="relative">
                                 <img
                                     id="thumbnail"
@@ -331,15 +311,13 @@ function Player(props) {
                                 </li>
                             </ul>
                         </div>
-                        {/* Suggestions column (stacks below on small screens) */}
+
                         {relatedSongs && relatedSongs.length > 0 && (
-                            <div className="w-full lg:w-1/3 mt-10 lg:mt-0">
+                            <div className="mt-10 w-full max-w-4xl mx-auto">
                                 <div className="bg-white/5 backdrop-blur-xl border border-cyan-500/40 rounded-3xl shadow-2xl px-4 md:px-6 py-4 md:py-6">
                                     <h2 className="text-lg md:text-xl font-semibold mb-4 flex items-center gap-2">
                                         More like this
-                                        <span className="text-xs font-normal text-cyan-300">
-                                            based on {props.details.primaryArtists.split(',')[0]}
-                                        </span>
+                                        <span className="text-xs font-normal text-cyan-300">based on {props.details.primaryArtists.split(',')[0]}</span>
                                     </h2>
                                     <div className="flex flex-wrap -m-2">
                                         {relatedSongs.map((song) => (
@@ -350,7 +328,7 @@ function Player(props) {
                                                     if (!props.setDetails) return;
                                                     const details = await getSongDetails(song.id);
                                                     props.setDetails(details);
-                                                    // once details update, useEffect will re-run and refresh related songs
+                                                    navigate("/listen");
                                                 }}
                                             />
                                         ))}
