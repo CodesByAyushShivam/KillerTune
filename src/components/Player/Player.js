@@ -98,10 +98,15 @@ function Player(props) {
         }
     }
 
-    const handleSeek = (e) => {
+    const handleWaveSeek = (e) => {
+        if (!duration) return;
         const audio = audioRef.current;
-        const seekTime = (duration / 100) * e.target.value;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const ratio = Math.min(Math.max(clickX / rect.width, 0), 1);
+        const seekTime = duration * ratio;
         audio.currentTime = seekTime;
+        setCurrentTime(seekTime);
     }
 
     const handlePrevious = () => {
@@ -120,6 +125,9 @@ function Player(props) {
     const currentSecs = Math.floor(currentTime % 60);
     const durationMins = Math.floor(duration / 60);
     const durationSecs = Math.floor(duration % 60);
+
+    const bars = Array.from({ length: 40 }, (_, i) => i);
+    const progressPercent = duration ? (currentTime / duration) * 100 : 0;
 
 
     return (
@@ -143,18 +151,37 @@ function Player(props) {
                             </div>
                             <audio ref={audioRef} src={props.details.downloadUrl[4]["link"]} />
 
-                            {/* Slider  */}
+                            {/* Wave Progress Bar */}
                             <div className="px-4 pt-4">
-                                <input
-                                    onChange={handleSeek}
-                                    min="0"
-                                    max="100"
-                                    value={(currentTime / duration) * 100}
-                                    type="range"
-                                    className="w-full accent-green-400 bg-transparent cursor-pointer"
-                                    name="slider"
-                                    id="slider"
-                                />
+                                <div
+                                    className="wave-progress-track"
+                                    onClick={handleWaveSeek}
+                                >
+                                    {/* Animated gradient background */}
+                                    <div className="wave-progress-bg animate-color-shift" />
+
+                                    {/* Bars representing the waveform / progress */}
+                                    <div className="wave-bars-container">
+                                        {bars.map((bar) => {
+                                            const barPosition = (bar / bars.length) * 100;
+                                            const isActive = barPosition <= progressPercent;
+                                            return (
+                                                <div key={bar} className="wave-bar-wrapper">
+                                                    <div
+                                                        className={`wave-bar ${isActive ? 'wave-bar-active' : 'wave-bar-inactive'} animate-wave`}
+                                                        style={{ animationDelay: `${bar * 80}ms` }}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Thumb */}
+                                    <div
+                                        className="wave-thumb"
+                                        style={{ left: `calc(${progressPercent}% - 6px)` }}
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex items-center justify-between text-xs font-semibold text-black dark:text-gray-200 px-4 py-3 bg-black/20 dark:bg-white/5 backdrop-blur-md">
